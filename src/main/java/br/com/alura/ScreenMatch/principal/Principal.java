@@ -1,9 +1,6 @@
 package br.com.alura.ScreenMatch.principal;
 
-import br.com.alura.ScreenMatch.model.DadosSerie;
-import br.com.alura.ScreenMatch.model.DadosTemporada;
-import br.com.alura.ScreenMatch.model.Episodio;
-import br.com.alura.ScreenMatch.model.Serie;
+import br.com.alura.ScreenMatch.model.*;
 import br.com.alura.ScreenMatch.repository.SerieRepository;
 import br.com.alura.ScreenMatch.service.ConsumoApi;
 import br.com.alura.ScreenMatch.service.ConverteDados;
@@ -32,13 +29,14 @@ public class Principal {
 
     public void exibeMenu() {
         var menu = """
-                1 - Buscar séries
-                2 - Buscar episódios
-                3 - Exibir lista de séries
-                4 - Buscar Série por título
-                5 - Buscar Série por ator
+                1 - Buscar Séries
+                2 - Buscar Episódios
+                3 - Exibir lista de Séries
+                4 - Buscar Série por Título
+                5 - Buscar Série por Ator
                 6 - Top 5 Séries
-                
+                7 - Buscar por Categoria/Gênero
+                8 - Buscar por quantidade de temporadas e avaliações
                 
                 0 - Sair                                 
                 """;
@@ -67,6 +65,11 @@ public class Principal {
                 case 6:
                     buscarTop5Series();
                     break;
+                case 7:
+                    buscarSeriePorGenero();
+                    break;
+                case 8:
+                    buscarSeriePorNumeroDeTemporadas();
                 case 0:
                     System.out.println("Saindo...");
                     break;
@@ -74,6 +77,23 @@ public class Principal {
                     System.out.println("Opção inválida");
             }
         }
+    }
+
+    private void buscarSeriePorNumeroDeTemporadas() {
+        System.out.println("Digite o número de temporadas que deseja: ");
+        var numeroTemporadas = leitura.nextInt();
+        System.out.println("Avaliações a partir de qual valor?: ");
+        var numeroAvaliacoes = leitura.nextDouble();
+        List<Serie> seriesNumeroTemporadas = repositorio.findByTotalTemporadasLessThanEqualAndAvaliacaoGreaterThanEqual(numeroTemporadas, numeroAvaliacoes);
+        seriesNumeroTemporadas.forEach(System.out::println);
+    }
+
+    private void buscarSeriePorGenero() {
+        System.out.println("Digite a Categoria/Gênero para buscar a série: ");
+        var nomeGenero = leitura.nextLine();
+        Categoria categoria = Categoria.fromPortugues(nomeGenero);
+        List<Serie> seriesCategoria = repositorio.findByGenero(categoria);
+        seriesCategoria.forEach(System.out::println);
     }
 
     private void buscarTop5Series() {
